@@ -326,30 +326,33 @@ func TestOptimizeDefaultForFuseNoValue(t *testing.T) {
 	}
 }
 
-func TestOptimizeDefaultForFuseWithValue(t *testing.T) {
-	var tests = []struct {
-		runtime             *datav1alpha1.AlluxioRuntime
-		alluxioValue        *Alluxio
-		isNewFuseArgVersion bool
-		expect              []string
-	}{
-		{&datav1alpha1.AlluxioRuntime{
-			Spec: datav1alpha1.AlluxioRuntimeSpec{
-				Fuse: datav1alpha1.AlluxioFuseSpec{
-					JvmOptions: []string{"-Xmx4G"},
-				},
-			},
-		}, &Alluxio{
-			Properties: map[string]string{},
-		}, true, []string{"-Xmx4G"}},
-	}
-	for _, test := range tests {
-		engine := &AlluxioEngine{}
-		engine.optimizeDefaultFuse(test.runtime, test.alluxioValue, test.isNewFuseArgVersion)
-		if test.alluxioValue.Fuse.JvmOptions[0] != test.expect[0] {
-			t.Errorf("expected %v, got %v", test.expect, test.alluxioValue.Fuse.JvmOptions)
-		}
-	}
+// TestOptimizeDefaultForFuseWithValue tests the `optimizeDefaultFuse` method in `AlluxioEngine`.  
+// It verifies the method’s logic for optimizing Fuse configurations in `AlluxioRuntime`,  
+// specifically focusing on whether the optimized Fuse `JvmOptions` match the expected results.  
+func TestOptimizeDefaultForFuseWithValue(t *testing.T) {  
+    var tests = []struct {  
+        runtime             *datav1alpha1.AlluxioRuntime  
+        alluxioValue        *Alluxio  
+        isNewFuseArgVersion bool  
+        expect              []string  
+    }{  
+        {&datav1alpha1.AlluxioRuntime{  
+            Spec: datav1alpha1.AlluxioRuntimeSpec{  
+                Fuse: datav1alpha1.AlluxioFuseSpec{  
+                    JvmOptions: []string{"-Xmx4G"},  
+                },  
+            },  
+        }, &Alluxio{  
+            Properties: map[string]string{},  
+        }, true, []string{"-Xmx4G"}},  
+    }  
+    for _, test := range tests {  
+        engine := &AlluxioEngine{}  
+        engine.optimizeDefaultFuse(test.runtime, test.alluxioValue, test.isNewFuseArgVersion)  
+        if test.alluxioValue.Fuse.JvmOptions[0] != test.expect[0] {  
+            t.Errorf("expected %v, got %v", test.expect, test.alluxioValue.Fuse.JvmOptions)  
+        }  
+    }  
 }
 
 func TestAlluxioEngine_setPortProperties(t *testing.T) {
